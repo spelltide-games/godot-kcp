@@ -70,12 +70,17 @@ def main():
     env = os.environ.copy()
     if args.ndk:
         env["ANDROID_NDK_ROOT"] = args.ndk
+        env["ANDROID_NDK_HOME"] = args.ndk
+        env["ANDROID_NDK"] = args.ndk
+        env["NDK_HOME"] = args.ndk
     if args.emsdk:
         env["EMSDK"] = args.emsdk
 
     scons_cmd = ["scons", f"platform={args.platform}", f"target={args.target}"]
     if args.arch:
         scons_cmd.append(f"arch={args.arch}")
+    if args.ndk:
+        scons_cmd.append(f"ndk_path={args.ndk}")
     scons_cmd.extend(args.extra)
 
     run(scons_cmd, env=env)
