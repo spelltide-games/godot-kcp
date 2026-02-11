@@ -12,7 +12,8 @@ env.Append(
         "godot-cpp/gdextension",
     ]
 )
-sources = Glob("src/*.cpp") + ["kcp/ikcp.c"]
+kcp_object = env.SharedObject(target="bin/ikcp", source="kcp/ikcp.c")
+sources = Glob("src/*.cpp") + [kcp_object]
 
 if env["platform"] == "macos":
     library = env.SharedLibrary(

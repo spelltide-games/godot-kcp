@@ -76,9 +76,8 @@ PackedByteArray KcpPeer::recv(int64_t max_len) {
         return out;
     }
 
-    const int to_read = peek;
-    out.resize(to_read);
-    ikcp_recv(kcp, reinterpret_cast<char *>(out.ptrw()), to_read);
+    out.resize(peek);
+    ikcp_recv(kcp, reinterpret_cast<char *>(out.ptrw()), peek);
     return out;
 }
 

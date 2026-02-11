@@ -12,7 +12,9 @@ void initialize_godot_kcp_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<KcpPeer>();
 }
 
-void uninitialize_godot_kcp_module(ModuleInitializationLevel) {}
+void uninitialize_godot_kcp_module(ModuleInitializationLevel p_level) {
+    (void)p_level;
+}
 
 extern "C" {
 GDExtensionBool GDE_EXPORT godot_kcp_library_init(GDExtensionInterfaceGetProcAddress p_get_proc_address,
