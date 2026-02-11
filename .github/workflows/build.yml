@@ -18,14 +18,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install scons
 
-      - name: Build
-        run: scons platform=linux target=template_release
-
-      - name: Package addon artifact
-        run: |
-          mkdir -p dist/addons/godot-kcp/bin
-          cp -n godot-kcp.gdextension dist/addons/godot-kcp/ || true
-          cp bin/libgodot-kcp*.so dist/addons/godot-kcp/bin/
+      - name: Build and package
+        run: python build.py --platform linux --target template_release
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -46,15 +40,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install scons
 
-      - name: Build
-        run: scons platform=windows target=template_release arch=x86_64
-
-      - name: Package addon artifact
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path dist/addons/godot-kcp/bin | Out-Null
-          Copy-Item godot-kcp.gdextension dist/addons/godot-kcp/ -ErrorAction SilentlyContinue
-          Copy-Item bin\libgodot-kcp*.dll dist/addons/godot-kcp/bin/
+      - name: Build and package
+        run: python build.py --platform windows --target template_release --arch x86_64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -75,15 +62,8 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install scons
 
-      - name: Build
-        run: scons platform=macos target=template_release arch=arm64
-
-      - name: Package addon artifact
-        run: |
-          mkdir -p dist/addons/godot-kcp/bin
-          cp -n godot-kcp.gdextension dist/addons/godot-kcp/ || true
-          cp -R bin/libgodot-kcp*.framework dist/addons/godot-kcp/bin/ || true
-          cp bin/libgodot-kcp*.dylib dist/addons/godot-kcp/bin/ || true
+      - name: Build and package
+        run: python build.py --platform macos --target template_release --arch arm64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -111,16 +91,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install scons
 
-      - name: Build
+      - name: Build and package
         env:
           ANDROID_NDK_ROOT: ${{ env.ANDROID_NDK }}
-        run: scons platform=android target=template_release arch=arm64v8
-
-      - name: Package addon artifact
-        run: |
-          mkdir -p dist/addons/godot-kcp/bin
-          cp -n godot-kcp.gdextension dist/addons/godot-kcp/ || true
-          cp bin/libgodot-kcp*.so dist/addons/godot-kcp/bin/
+        run: python build.py --platform android --target template_release --arch arm64v8 --ndk "$ANDROID_NDK_ROOT"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -141,14 +115,8 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install scons
 
-      - name: Build
-        run: scons platform=ios target=template_release arch=arm64 ios_simulator=no
-
-      - name: Package addon artifact
-        run: |
-          mkdir -p dist/addons/godot-kcp/bin
-          cp -n godot-kcp.gdextension dist/addons/godot-kcp/ || true
-          cp bin/libgodot-kcp*.a dist/addons/godot-kcp/bin/
+      - name: Build and package
+        run: python build.py --platform ios --target template_release --arch arm64 --extra ios_simulator=no
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -175,16 +143,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install scons
 
-      - name: Build
+      - name: Build and package
         env:
           EMSDK: ${{ env.EMSDK }}
-        run: scons platform=web target=template_release
-
-      - name: Package addon artifact
-        run: |
-          mkdir -p dist/addons/godot-kcp/bin
-          cp -n godot-kcp.gdextension dist/addons/godot-kcp/ || true
-          cp bin/libgodot-kcp*.wasm dist/addons/godot-kcp/bin/
+        run: python build.py --platform web --target template_release --emsdk "$EMSDK"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
