@@ -24,7 +24,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot-kcp-all-platforms
+          name: godot-kcp-linux
           path: dist/addons/godot-kcp/**
 
   windows:
@@ -46,7 +46,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot-kcp-all-platforms
+          name: godot-kcp-windows
           path: dist/addons/godot-kcp/**
 
   macos:
@@ -68,7 +68,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot-kcp-all-platforms
+          name: godot-kcp-macos
           path: dist/addons/godot-kcp/**
 
   android:
@@ -99,7 +99,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot-kcp-all-platforms
+          name: godot-kcp-android
           path: dist/addons/godot-kcp/**
 
   ios:
@@ -121,7 +121,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot-kcp-all-platforms
+          name: godot-kcp-ios
           path: dist/addons/godot-kcp/**
 
   web:
@@ -149,6 +149,35 @@ jobs:
         run: python build.py --platform web --target template_release --emsdk "$EMSDK"
 
       - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-kcp-web
+          path: dist/addons/godot-kcp/**
+
+  merge:
+    runs-on: ubuntu-latest
+    needs:
+      - linux
+      - windows
+      - macos
+      - android
+      - ios
+      - web
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: collected
+
+      - name: Merge artifacts
+        run: |
+          mkdir -p dist/addons/godot-kcp/bin
+          # Copy gdextension once
+          find collected -name "godot-kcp.gdextension" -print -quit | xargs -r -I{} cp {} dist/addons/godot-kcp/godot-kcp.gdextension
+          # Merge bin files
+          find collected -type f ! -name "godot-kcp.gdextension" -print -exec cp {} dist/addons/godot-kcp/bin/ \;
+
+      - name: Upload final artifact
         uses: actions/upload-artifact@v4
         with:
           name: godot-kcp-all-platforms
