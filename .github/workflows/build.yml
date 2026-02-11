@@ -23,15 +23,15 @@ jobs:
 
       - name: Package addon artifact
         run: |
-          mkdir -p dist/linux/addons/godot-kcp/bin
-          cp godot-kcp.gdextension dist/linux/addons/godot-kcp/
-          cp bin/libgodot-kcp*.so dist/linux/addons/godot-kcp/bin/
+          mkdir -p dist/addons/godot-kcp/bin
+          cp -n godot-kcp.gdextension dist/addons/godot-kcp/ || true
+          cp bin/libgodot-kcp*.so dist/addons/godot-kcp/bin/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: godot-kcp-all-platforms
-          path: dist/linux/**
+          path: dist/addons/godot-kcp/**
 
   windows:
     runs-on: windows-latest
@@ -52,15 +52,15 @@ jobs:
       - name: Package addon artifact
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force -Path dist/windows/addons/godot-kcp/bin | Out-Null
-          Copy-Item godot-kcp.gdextension dist/windows/addons/godot-kcp/
-          Copy-Item bin\libgodot-kcp*.dll dist/windows/addons/godot-kcp/bin/
+          New-Item -ItemType Directory -Force -Path dist/addons/godot-kcp/bin | Out-Null
+          Copy-Item godot-kcp.gdextension dist/addons/godot-kcp/ -ErrorAction SilentlyContinue
+          Copy-Item bin\libgodot-kcp*.dll dist/addons/godot-kcp/bin/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: godot-kcp-all-platforms
-          path: dist/windows/**
+          path: dist/addons/godot-kcp/**
 
   macos:
     runs-on: macos-latest
@@ -80,16 +80,16 @@ jobs:
 
       - name: Package addon artifact
         run: |
-          mkdir -p dist/macos/addons/godot-kcp/bin
-          cp godot-kcp.gdextension dist/macos/addons/godot-kcp/
-          cp -R bin/libgodot-kcp*.framework dist/macos/addons/godot-kcp/bin/ || true
-          cp bin/libgodot-kcp*.dylib dist/macos/addons/godot-kcp/bin/ || true
+          mkdir -p dist/addons/godot-kcp/bin
+          cp -n godot-kcp.gdextension dist/addons/godot-kcp/ || true
+          cp -R bin/libgodot-kcp*.framework dist/addons/godot-kcp/bin/ || true
+          cp bin/libgodot-kcp*.dylib dist/addons/godot-kcp/bin/ || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: godot-kcp-all-platforms
-          path: dist/macos/**
+          path: dist/addons/godot-kcp/**
 
   android:
     runs-on: ubuntu-latest
@@ -118,15 +118,15 @@ jobs:
 
       - name: Package addon artifact
         run: |
-          mkdir -p dist/android/addons/godot-kcp/bin
-          cp godot-kcp.gdextension dist/android/addons/godot-kcp/
-          cp bin/libgodot-kcp*.so dist/android/addons/godot-kcp/bin/
+          mkdir -p dist/addons/godot-kcp/bin
+          cp -n godot-kcp.gdextension dist/addons/godot-kcp/ || true
+          cp bin/libgodot-kcp*.so dist/addons/godot-kcp/bin/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: godot-kcp-all-platforms
-          path: dist/android/**
+          path: dist/addons/godot-kcp/**
 
   ios:
     runs-on: macos-latest
@@ -146,15 +146,15 @@ jobs:
 
       - name: Package addon artifact
         run: |
-          mkdir -p dist/ios/addons/godot-kcp/bin
-          cp godot-kcp.gdextension dist/ios/addons/godot-kcp/
-          cp bin/libgodot-kcp*.a dist/ios/addons/godot-kcp/bin/
+          mkdir -p dist/addons/godot-kcp/bin
+          cp -n godot-kcp.gdextension dist/addons/godot-kcp/ || true
+          cp bin/libgodot-kcp*.a dist/addons/godot-kcp/bin/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: godot-kcp-all-platforms
-          path: dist/ios/**
+          path: dist/addons/godot-kcp/**
 
   web:
     runs-on: ubuntu-latest
@@ -182,12 +182,12 @@ jobs:
 
       - name: Package addon artifact
         run: |
-          mkdir -p dist/web/addons/godot-kcp/bin
-          cp godot-kcp.gdextension dist/web/addons/godot-kcp/
-          cp bin/libgodot-kcp*.wasm dist/web/addons/godot-kcp/bin/
+          mkdir -p dist/addons/godot-kcp/bin
+          cp -n godot-kcp.gdextension dist/addons/godot-kcp/ || true
+          cp bin/libgodot-kcp*.wasm dist/addons/godot-kcp/bin/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: godot-kcp-all-platforms
-          path: dist/web/**
+          path: dist/addons/godot-kcp/**
