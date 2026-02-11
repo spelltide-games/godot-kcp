@@ -59,8 +59,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install scons
+          brew update
+          brew install scons
 
       - name: Build and package
         run: python build.py --platform macos --target template_release --arch arm64
