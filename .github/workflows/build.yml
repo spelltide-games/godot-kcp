@@ -1,0 +1,39 @@
+name: build-and-package
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [template_debug, template_release]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install scons
+
+      - name: Build (${{ matrix.target }})
+        run: scons platform=linux target=${{ matrix.target }}
+
+      - name: Package addon artifact
+        run: |
+          mkdir -p dist/addons/godot-kcp/bin
+          cp godot-kcp.gdextension dist/addons/godot-kcp/
+          cp bin/libgodot-kcp*.so dist/addons/godot-kcp/bin/
+          cd dist
+          zip -r ../godot-kcp-${{ matrix.target }}-linux-x86_64.zip addons
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-kcp-${{ matrix.target }}-linux-x86_64
+          path: godot-kcp-${{ matrix.target }}-linux-x86_64.zip
