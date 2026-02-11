@@ -80,7 +80,7 @@ def main():
     if args.arch:
         scons_cmd.append(f"arch={args.arch}")
     if args.ndk:
-        scons_cmd.append(f"ndk_path={args.ndk}")
+        scons_cmd.append(f"android_ndk_root={args.ndk}")
     scons_cmd.extend(args.extra)
 
     run(scons_cmd, env=env)
