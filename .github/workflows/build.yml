@@ -96,7 +96,8 @@ jobs:
 
       - name: Build and package
         env:
-          ANDROID_NDK_ROOT: ${{ env.ANDROID_NDK }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: python build.py --platform android --target template_release --arch arm64v8 --ndk "$ANDROID_NDK_ROOT"
 
       - name: Upload artifact
