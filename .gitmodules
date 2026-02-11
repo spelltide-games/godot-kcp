@@ -1,0 +1,6 @@
+[submodule "godot-cpp"]
+	path = godot-cpp
+	url = https://github.com/godotengine/godot-cpp.git
+[submodule "kcp"]
+	path = kcp
+	url = https://github.com/skywind3000/kcp
