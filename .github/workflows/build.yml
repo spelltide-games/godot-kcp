@@ -84,9 +84,9 @@ jobs:
         id: setup-ndk
         uses: nttld/setup-ndk@v1
         with:
-          ndk-version: r23
+          ndk-version: r28
           local-cache: false
-          add-to-path: false
+          add-to-path: true
 
       - name: Install dependencies
         run: |
@@ -94,10 +94,7 @@ jobs:
           pip install scons
 
       - name: Build and package
-        env:
-          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
-          ANDROID_NDK: ${{ steps.setup-ndk.outputs.ndk-path }}
-        run: python build.py --platform android --target template_release --arch arm64v8 --ndk "$ANDROID_NDK_ROOT"
+        run: python build.py --platform android --target template_release --arch arm64v8
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

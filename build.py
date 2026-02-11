@@ -62,25 +62,17 @@ def main():
     parser.add_argument("--platform", required=True)
     parser.add_argument("--target", default="template_release")
     parser.add_argument("--arch", default=None)
-    parser.add_argument("--ndk", default=None, help="ANDROID_NDK_ROOT path")
     parser.add_argument("--emsdk", default=None, help="EMSDK path for web")
     parser.add_argument("--extra", nargs="*", default=[], help="Extra key=value pairs for scons")
     args = parser.parse_args()
 
     env = os.environ.copy()
-    if args.ndk:
-        env["ANDROID_NDK_ROOT"] = args.ndk
-        env["ANDROID_NDK_HOME"] = args.ndk
-        env["ANDROID_NDK"] = args.ndk
-        env["NDK_HOME"] = args.ndk
     if args.emsdk:
         env["EMSDK"] = args.emsdk
 
     scons_cmd = ["scons", f"platform={args.platform}", f"target={args.target}"]
     if args.arch:
         scons_cmd.append(f"arch={args.arch}")
-    if args.ndk:
-        scons_cmd.append(f"android_ndk_root={args.ndk}")
     scons_cmd.extend(args.extra)
 
     run(scons_cmd, env=env)
