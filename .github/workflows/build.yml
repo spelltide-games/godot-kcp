@@ -7,9 +7,6 @@ on:
 jobs:
   linux:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        target: [template_debug, template_release]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,8 +18,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install scons
 
-      - name: Build (${{ matrix.target }})
-        run: scons platform=linux target=${{ matrix.target }}
+      - name: Build
+        run: scons platform=linux target=template_release
 
       - name: Package addon artifact
         run: |
@@ -30,10 +27,178 @@ jobs:
           cp godot-kcp.gdextension dist/addons/godot-kcp/
           cp bin/libgodot-kcp*.so dist/addons/godot-kcp/bin/
           cd dist
-          zip -r ../godot-kcp-${{ matrix.target }}-linux-x86_64.zip addons
+          zip -r ../godot-kcp-linux-template_release-x86_64.zip addons
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot-kcp-${{ matrix.target }}-linux-x86_64
-          path: godot-kcp-${{ matrix.target }}-linux-x86_64.zip
+          name: godot-kcp-linux-template_release-x86_64
+          path: godot-kcp-linux-template_release-x86_64.zip
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install scons
+
+      - name: Build
+        run: scons platform=windows target=template_release arch=x86_64
+
+      - name: Package addon artifact
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/addons/godot-kcp/bin | Out-Null
+          Copy-Item godot-kcp.gdextension dist/addons/godot-kcp/
+          Copy-Item bin\libgodot-kcp*.dll dist/addons/godot-kcp/bin/
+          Compress-Archive -Path dist/addons -DestinationPath godot-kcp-windows-template_release-x86_64.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-kcp-windows-template_release-x86_64
+          path: godot-kcp-windows-template_release-x86_64.zip
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install scons
+
+      - name: Build
+        run: scons platform=macos target=template_release arch=arm64
+
+      - name: Package addon artifact
+        run: |
+          mkdir -p dist/addons/godot-kcp/bin
+          cp godot-kcp.gdextension dist/addons/godot-kcp/
+          cp -R bin/libgodot-kcp*.framework dist/addons/godot-kcp/bin/ || true
+          cp bin/libgodot-kcp*.dylib dist/addons/godot-kcp/bin/ || true
+          cd dist
+          zip -r ../godot-kcp-macos-template_release-arm64.zip addons
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-kcp-macos-template_release-arm64
+          path: godot-kcp-macos-template_release-arm64.zip
+
+  android:
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_NDK_VERSION: 23.1.7779620
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up NDK
+        uses: android-actions/setup-ndk@v2
+        with:
+          ndk-version: ${{ env.ANDROID_NDK_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install scons
+
+      - name: Build
+        env:
+          ANDROID_NDK_ROOT: ${{ env.ANDROID_NDK }}
+        run: scons platform=android target=template_release arch=arm64v8
+
+      - name: Package addon artifact
+        run: |
+          mkdir -p dist/addons/godot-kcp/bin
+          cp godot-kcp.gdextension dist/addons/godot-kcp/
+          cp bin/libgodot-kcp*.so dist/addons/godot-kcp/bin/
+          cd dist
+          zip -r ../godot-kcp-android-template_release-arm64v8.zip addons
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-kcp-android-template_release-arm64v8
+          path: godot-kcp-android-template_release-arm64v8.zip
+
+  ios:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install scons
+
+      - name: Build
+        run: scons platform=ios target=template_release arch=arm64 ios_simulator=no
+
+      - name: Package addon artifact
+        run: |
+          mkdir -p dist/addons/godot-kcp/bin
+          cp godot-kcp.gdextension dist/addons/godot-kcp/
+          cp bin/libgodot-kcp*.a dist/addons/godot-kcp/bin/
+          cd dist
+          zip -r ../godot-kcp-ios-template_release-arm64.zip addons
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-kcp-ios-template_release-arm64
+          path: godot-kcp-ios-template_release-arm64.zip
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Emscripten
+        uses: mymindstorm/setup-emsdk@v12
+        with:
+          version: 3.1.43
+          actions-cache: true
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install scons
+
+      - name: Build
+        env:
+          EMSDK: ${{ env.EMSDK }}
+        run: scons platform=web target=template_release
+
+      - name: Package addon artifact
+        run: |
+          mkdir -p dist/addons/godot-kcp/bin
+          cp godot-kcp.gdextension dist/addons/godot-kcp/
+          cp bin/libgodot-kcp*.wasm dist/addons/godot-kcp/bin/
+          cd dist
+          zip -r ../godot-kcp-web-template_release-wasm32.zip addons
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-kcp-web-template_release-wasm32
+          path: godot-kcp-web-template_release-wasm32.zip
