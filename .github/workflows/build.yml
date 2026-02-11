@@ -82,9 +82,12 @@ jobs:
           submodules: recursive
 
       - name: Set up NDK
-        uses: android-actions/setup-ndk@v2
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
         with:
-          ndk-version: ${{ env.ANDROID_NDK_VERSION }}
+          ndk-version: r23
+          local-cache: false
+          add-to-path: false
 
       - name: Install dependencies
         run: |
