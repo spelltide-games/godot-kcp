@@ -20,7 +20,7 @@ jobs:
       - name: Build and package
         run: |
           python build.py --platform linux --target template_release
-          # python build.py --platform linux --target template_debug
+          python build.py --platform linux --target template_debug
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -44,7 +44,7 @@ jobs:
       - name: Build and package
         run: |
           python build.py --platform windows --target template_release --arch x86_64
-          # python build.py --platform windows --target template_debug --arch x86_64
+          python build.py --platform windows --target template_debug --arch x86_64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -68,7 +68,7 @@ jobs:
       - name: Build and package
         run: |
           python build.py --platform macos --target template_release --arch arm64
-          # python build.py --platform macos --target template_debug --arch arm64
+          python build.py --platform macos --target template_debug --arch arm64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -99,7 +99,7 @@ jobs:
       - name: Build and package
         run: |
           python build.py --platform android --target template_release --arch arm64v8
-          # python build.py --platform android --target template_debug --arch arm64v8
+          python build.py --platform android --target template_debug --arch arm64v8
         env:
           ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
           ANDROID_HOME: ""
@@ -126,7 +126,7 @@ jobs:
       - name: Build and package
         run: |
           python build.py --platform ios --target template_release --arch arm64
-          # python build.py --platform ios --target template_debug --arch arm64
+          python build.py --platform ios --target template_debug --arch arm64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -157,7 +157,7 @@ jobs:
           EMSDK: ${{ env.EMSDK }}
         run: |
           python build.py --platform web --target template_release --emsdk "$EMSDK"
-          # python build.py --platform web --target template_debug --emsdk "$EMSDK"
+          python build.py --platform web --target template_debug --emsdk "$EMSDK"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
