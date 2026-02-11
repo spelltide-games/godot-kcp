@@ -18,7 +18,9 @@ jobs:
           pip install scons
 
       - name: Build and package
-        run: python build.py --platform linux --target template_release
+        run: |
+          python build.py --platform linux --target template_release
+          # python build.py --platform linux --target template_debug
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -40,7 +42,9 @@ jobs:
           pip install scons
 
       - name: Build and package
-        run: python build.py --platform windows --target template_release --arch x86_64
+        run: |
+          python build.py --platform windows --target template_release --arch x86_64
+          # python build.py --platform windows --target template_debug --arch x86_64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -62,7 +66,9 @@ jobs:
           brew install scons
 
       - name: Build and package
-        run: python build.py --platform macos --target template_release --arch arm64
+        run: |
+          python build.py --platform macos --target template_release --arch arm64
+          # python build.py --platform macos --target template_debug --arch arm64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -72,21 +78,18 @@ jobs:
 
   android:
     runs-on: ubuntu-latest
-    env:
-      ANDROID_NDK_VERSION: 23.1.7779620
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Set up NDK
+      - name: Setup NDK
         id: setup-ndk
         uses: nttld/setup-ndk@v1
         with:
-          ndk-version: r28
+          ndk-version: r27d
           local-cache: false
-          add-to-path: true
 
       - name: Install dependencies
         run: |
@@ -94,7 +97,12 @@ jobs:
           pip install scons
 
       - name: Build and package
-        run: python build.py --platform android --target template_release --arch arm64v8
+        run: |
+          python build.py --platform android --target template_release --arch arm64v8
+          # python build.py --platform android --target template_debug --arch arm64v8
+        env:
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_HOME: ""
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -116,7 +124,9 @@ jobs:
           brew install scons
 
       - name: Build and package
-        run: python build.py --platform ios --target template_release --arch arm64 --extra ios_simulator=no
+        run: |
+          python build.py --platform ios --target template_release --arch arm64
+          # python build.py --platform ios --target template_debug --arch arm64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -136,7 +146,6 @@ jobs:
         uses: mymindstorm/setup-emsdk@v12
         with:
           version: 3.1.43
-          actions-cache: true
 
       - name: Install dependencies
         run: |
@@ -146,7 +155,9 @@ jobs:
       - name: Build and package
         env:
           EMSDK: ${{ env.EMSDK }}
-        run: python build.py --platform web --target template_release --emsdk "$EMSDK"
+        run: |
+          python build.py --platform web --target template_release --emsdk "$EMSDK"
+          # python build.py --platform web --target template_debug --emsdk "$EMSDK"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -180,5 +191,5 @@ jobs:
       - name: Upload final artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot-kcp-all-platforms
+          name: godot-kcp
           path: dist/addons/godot-kcp/**

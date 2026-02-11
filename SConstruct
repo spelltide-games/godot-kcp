@@ -17,8 +17,8 @@ sources = Glob("src/*.cpp") + [kcp_object]
 
 if env["platform"] == "macos":
     library = env.SharedLibrary(
-        "bin/libgodot-kcp.{}.{}.framework/libgodot-kcp.{}.{}".format(
-            env["platform"], env["target"], env["platform"], env["target"]
+        "bin/libgodot-kcp.{}.{}.{}.dylib".format(
+            env["platform"], env["target"], env["arch"]
         ),
         source=sources,
     )
